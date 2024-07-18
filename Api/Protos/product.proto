@@ -1,0 +1,97 @@
+syntax = "proto3";
+
+package product;
+
+option csharp_namespace = "Api";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+service ProductService {
+	rpc Create (CreateProductRequest) returns (CreateProductReply){
+		option (google.api.http) = {
+			post: "/v1/product/create"
+			body: "*"
+		};
+	};
+	rpc Get (GetProductRequest) returns (GetProductReply){
+		option (google.api.http) = {
+			get: "/v1/product/get"
+		};
+	};
+	rpc UpdatePrice (UpdatePriceRequest) returns (UpdatePriceReply){
+		option (google.api.http) = {
+			patch: "/v1/product/updateprice"
+		};
+	};
+	rpc GetList (GetProductListRequest) returns (GetProductListReply){
+		option (google.api.http) = {
+			get: "/v1/product/getlist"
+		};
+	};
+}
+
+message CreateProductRequest {
+	string name = 1;
+	float price = 2;
+	float weight = 3;
+	ProductType product_type = 4;
+	int32 warehouse_id = 5;
+}
+
+message GetProductRequest {
+	int32 id = 1;
+}
+
+message UpdatePriceRequest {
+	int32 id = 1;
+	float price = 2;
+}
+
+message GetProductListRequest {
+	int32 page = 1;
+	int32 count = 2;
+	ProductFilter filter = 3;
+}
+
+enum ProductType{
+	PRODUCT_TYPE_UNSPECIFIED = 0;
+	PRODUCT_TYPE_COMMON = 1;
+    PRODUCT_TYPE_HOUSEHOLD_CHEMICALS = 2;
+    PRODUCT_TYPE_TECHNOLOGICAL = 3;
+    PRODUCT_TYPE_FOOD = 4;
+}
+
+message Product{
+	int32 id = 1;
+	string name = 2;
+	float price = 3;
+	float weight = 4;
+	ProductType product_type = 5;
+	google.protobuf.Timestamp creation_date = 6;
+	int32 warehouse_id = 7;
+}
+
+message ProductFilter{
+	google.protobuf.Timestamp from_date = 1;
+	google.protobuf.Timestamp to_date = 2;
+	ProductType product_type = 3;
+	google.protobuf.Int32Value warehouse_id = 4;
+}
+
+message CreateProductReply {
+	int32 id = 1;
+}
+
+message GetProductReply {
+	Product product = 1;
+}
+
+message UpdatePriceReply {
+	Product product = 1;
+}
+
+message GetProductListReply {
+	repeated Product products = 1; 
+}
